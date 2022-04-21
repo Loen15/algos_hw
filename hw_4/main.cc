@@ -44,8 +44,14 @@ public:
         elems_ = buffer;
         size_--;
     }
-
     size_t Size() const { return size_; }
+    
+    // void PrintArr() {
+    //     std::cout << "size:" << size_ << " elems:";
+    //     for (size_t i = 0; i < size_; i++) {
+    //         std::cout << elems_[i] << " ";
+    //     }
+    // }
 private:
     size_t size_ = 0;
     T* elems_ = nullptr;
@@ -55,7 +61,7 @@ template <typename T>
 class Heap {
 public:
     Heap () {}
-    ~Heap () { delete[] arr_; }
+    ~Heap () {}
 
     // добавление элементов
     void Insert (T const& elem) {
@@ -77,6 +83,9 @@ public:
     }
 
     bool IsEmpty() const { return arr_.Size() == 0; }
+    size_t Size() const { return arr_.Size(); }
+
+    // void PrintHeap() {arr_.PrintArr();}
 private:
     Array<T> arr_;
     
@@ -101,12 +110,28 @@ private:
                 return;
             std::swap(arr_[i],arr_[parent]);
             i = parent;
+            
         }
         
     }
 };
 
 int main() {
-
+    int k;
+    int size;
+    int tmp;
+    std::cin >> k;
+    Heap<int> heap;
+    for (int i = 0; i < k; i++) {
+        std::cin >> size;
+        for (int j = 0; j < size; j++) {
+            std::cin >> tmp;
+            heap.Insert(tmp);
+        }
+    }
+    while (!heap.IsEmpty()) {
+        std::cout << heap.ExtractMin() << " ";
+    }
+    std::cout << std::endl;
     return 0;
 }
