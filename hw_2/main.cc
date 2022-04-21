@@ -1,6 +1,6 @@
 #include <iostream>
 
-int BinarySearch(int a[], size_t start_of_array, size_t size);
+int BinarySearch(int a[], size_t size);
 int ExponentialSearch(int a[], size_t size);
 
 int main() {
@@ -18,14 +18,15 @@ int main() {
     return 0;
 }
 
-int BinarySearch(int a[], size_t start_of_array, size_t size) {
+int BinarySearch(int a[], size_t size) {
+    size_t start_of_array = size / 2;
     a = a + start_of_array;
     size_t i = (size - start_of_array) / 2;
     size_t tmp = i;
-    while (a[i - 1] < a [i] && a[i] < a [i + 1] && i < size) {
+    while (a[i - 1] > a [i] || a[i] < a [i + 1] && i < size) {
         if (tmp >= 2)
             tmp /= 2;
-        if (a[i - 1] < a [i] && a[i] < a [i + 1]) {
+        if (a[i] < a [i + 1]) {
             i += tmp;
         } else {
             i -= tmp;
@@ -40,9 +41,8 @@ int ExponentialSearch(int a[], size_t size) {
     while (buf_size < size && a[buf_size - 1] < a[buf_size]) {
         buf_size *= 2;
     }
-    int begin_of_buf_array = buf_size / 2;
     buf_size = std::min(buf_size, size);
-    int tmp = BinarySearch(a, begin_of_buf_array, buf_size);
+    int tmp = BinarySearch(a, buf_size);
     if (tmp != size) {
         return tmp;
     } else {
