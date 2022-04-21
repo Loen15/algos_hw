@@ -1,5 +1,6 @@
 #include <iostream>
 #include <exception>
+#include <functional>
 
 template <typename T>
 class Array {
@@ -60,45 +61,51 @@ private:
 template <typename T>
 class Heap {
 public:
-    Heap () {}
-    ~Heap () {}
+    Heap () : arr_(new Array<T>) {}
+    Heap (const std::function<bool(T, T)>& compare)
+      : arr_(new Array<T>),
+        compare_(compare) {}
+    ~Heap () {delete arr_; }
 
     // добавление элементов
     void Insert (T const& elem) {
-        arr_.Insert(elem);
-        SiftUp(arr_.Size()-1);
+        arr_->Insert(elem);
+        SiftUp(arr_->Size()-1);
     }
     // извлечение минимума
     T ExtractMin() {
         if (IsEmpty()) {        
             throw std::out_of_range("Heap is empty");
         }
-        T result = arr_[0];
-        arr_[0] = arr_[arr_.Size()-1];
-        arr_.Pop();
+        T result = (*arr_)[0];
+        (*arr_)[0] = (*arr_)[arr_->Size()-1];
+        arr_->Pop();
         if (!IsEmpty()) {        
             SiftDown(0);
         }
         return result;;
     }
 
-    bool IsEmpty() const { return arr_.Size() == 0; }
-    size_t Size() const { return arr_.Size(); }
+    bool IsEmpty() const { return arr_->Size() == 0; }
+    size_t Size() const { return arr_->Size(); }
 
     // void PrintHeap() {arr_.PrintArr();}
 private:
-    Array<T> arr_;
-    
+    Array<T>* arr_;
+    const std::function<bool(T, T)> compare_ = ([] (T const& left, T const& right)
+        {
+            return left < right;
+        });
     void SiftDown(size_t i) {
         size_t left = 2 * i + 1;
         size_t right = 2 * i + 2;
         size_t largest = i;
-        if( left < arr_.Size() && arr_[left] < arr_[i] )
+        if( left < arr_->Size() && compare_((*arr_)[left], (*arr_)[i]) )
             largest = left;
-        if( right < arr_.Size() && arr_[right] < arr_[largest] )
+        if( right < arr_->Size() && compare_((*arr_)[right], (*arr_)[largest]) )
             largest = right;
         if (largest !=  i) {
-            std::swap(arr_[i], arr_[largest]);
+            std::swap((*arr_)[i], (*arr_)[largest]);
             SiftDown(largest);
         }
     }
@@ -106,9 +113,9 @@ private:
         while (i > 0)
         {
             size_t parent = (i - 1) / 2;
-            if (arr_[i] >= arr_[parent])
+            if (!compare_((*arr_)[i], (*arr_)[parent]))
                 return;
-            std::swap(arr_[i],arr_[parent]);
+            std::swap((*arr_)[i],(*arr_)[parent]);
             i = parent;
             
         }
@@ -117,6 +124,7 @@ private:
 };
 
 int main() {
+    // ввод
     int k;
     int size;
     int tmp;
@@ -129,8 +137,12 @@ int main() {
             heap.Insert(tmp);
         }
     }
+
+    // вывод алгоритма
+    if (!heap.IsEmpty())
+        std::cout << heap.ExtractMin();
     while (!heap.IsEmpty()) {
-        std::cout << heap.ExtractMin() << " ";
+        std::cout << " " << heap.ExtractMin();
     }
     std::cout << std::endl;
     return 0;
