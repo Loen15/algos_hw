@@ -37,7 +37,7 @@ public:
     }
 
     void Pop() {
-         T* buffer = new T[size_-1];
+        T* buffer = new T[size_-1];
         for (size_t i = 0; i < (size_-1); ++i) {
             buffer[i] = elems_[i];
         }
@@ -47,12 +47,12 @@ public:
     }
     size_t Size() const { return size_; }
     
-    // void PrintArr() {
-    //     std::cout << "size:" << size_ << " elems:";
-    //     for (size_t i = 0; i < size_; i++) {
-    //         std::cout << elems_[i] << " ";
-    //     }
-    // }
+    void PrintArr() {
+        for (size_t i = 0; i < size_-1; i++) {
+            std::cout << elems_[i] << " ";
+        }
+        std::cout << elems_[size_-1] << std::endl;
+    }
 private:
     size_t size_ = 0;
     T* elems_ = nullptr;
@@ -89,7 +89,6 @@ public:
     bool IsEmpty() const { return arr_->Size() == 0; }
     size_t Size() const { return arr_->Size(); }
 
-    // void PrintHeap() {arr_.PrintArr();}
 private:
     Array<T>* arr_;
     const std::function<bool(T, T)> compare_ = ([] (T const& left, T const& right)
@@ -123,27 +122,50 @@ private:
     }
 };
 
+template <typename T>
+Array<T> Execute(int const& k, int* const& size, int ** const& arrays) {
+    Heap<int> heap;
+    for (int i = 0; i < k; i++) {
+        for (int j = 0; j < size[i]; j++) {
+            heap.Insert(arrays[i][j]);
+        }
+    }
+    Array<T> result;
+    while (!heap.IsEmpty()) {
+        result.Insert(heap.ExtractMin());
+    }
+    return result;
+}
 int main() {
     // ввод
     int k;
-    int size;
-    int tmp;
     std::cin >> k;
-    Heap<int> heap;
+    int* size = new int[k];
+    int** arrays = new int*[k];
     for (int i = 0; i < k; i++) {
-        std::cin >> size;
-        for (int j = 0; j < size; j++) {
-            std::cin >> tmp;
-            heap.Insert(tmp);
+        std::cin >> size[i];
+        arrays[i] = new int[size[i]];
+        for (int j = 0; j < size[i]; j++) {
+            std::cin >> arrays[i][j];
         }
     }
 
+    // алгоритм
+    Array<int> result = Execute<int>(k, size,arrays);
+
     // вывод алгоритма
-    if (!heap.IsEmpty())
-        std::cout << heap.ExtractMin();
-    while (!heap.IsEmpty()) {
-        std::cout << " " << heap.ExtractMin();
-    }
-    std::cout << std::endl;
+    result.PrintArr();
+    // Heap<int> heap;
+    // for (int i = 0; i < k; i++) {
+    //     for (int j = 0; j < size[i]; j++) {
+    //         heap.Insert(arrays[i][j]);
+    //     }
+    // }
+    // if (!heap.IsEmpty())
+    //     std::cout << heap.ExtractMin();
+    // while (!heap.IsEmpty()) {
+    //     std::cout << " " << heap.ExtractMin();
+    // }
+    // std::cout << std::endl;
     return 0;
 }
