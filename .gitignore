@@ -1,7 +1,13 @@
 # Ignore all
 *
-# Unignore all cc
-!*/*.cc
+
+
+# Unignore all with extensions
+!*.cc
+!*.md
+
+# Unignore all dirs
+!*/
 
 # Ignore vscode folder
 */.vscode
