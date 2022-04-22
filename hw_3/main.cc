@@ -118,6 +118,8 @@ int main() {
     } else {
         std::cout << "NO" << std::endl;
     }
+	// очищение
+	delete[] array;
     return 0;
 }
 

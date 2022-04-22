@@ -238,5 +238,10 @@ int main() {
 
     // вывод алгоритма
     result.PrintArr();
+
+	for (int i = 0; i < k; i++) {
+		delete[] arrays[i];
+    }
+	delete[] arrays;
     return 0;
 }
