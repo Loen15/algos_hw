@@ -6,11 +6,27 @@
 
 #include <iostream>
 
-using namespace std;
+int BitCounter(unsigned int number); 
 
 int main()
 {
-    cout<<"Hello World";
+    // ввод
+    unsigned int number;
+    std::cin >> number;
 
+    //вывод алгоритма
+    std::cout << BitCounter(number) << std::endl;
     return 0;
+}
+
+
+int BitCounter(unsigned int number) {
+    int count= 0;
+    while (number > 0) {
+        if (number & 1) {
+            count++;
+        }
+        number = number >> 2;
+    }
+    return count;
 }
