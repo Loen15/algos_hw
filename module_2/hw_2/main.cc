@@ -22,8 +22,7 @@ class Tree {
 public:
     Tree(Comparator cmp = Comparator())
           : cmp_(cmp),
-            root_(nullptr),
-            size_(0) {}
+            root_(nullptr) {}
     
     ~Tree() {
         auto for_delete = LevelOrder();
@@ -46,7 +45,6 @@ public:
                 }
             }
             node = new Node(data);
-            size_++;
             if (cmp_(node->value, prev->value)) {
                 prev->left = node;
             } else {
@@ -81,7 +79,6 @@ public:
     }
 private:
     Node* root_;
-    size_t size_;
     Comparator cmp_;
 };
 
