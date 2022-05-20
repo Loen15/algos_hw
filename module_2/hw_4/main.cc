@@ -3,7 +3,6 @@
 //  команда удаления числа A задается отрицательным числом “-A”. Запрос на получение k-ой порядковой статистики задается числом k
 
 #include <iostream>
-#include <array>
 
 template<typename T, typename Comparator = std::less<T>>
 class AVLTree {
@@ -36,17 +35,18 @@ public:
     T kthStat(int const& k) {
         Node* node = root_;
         int k_tmp = k;
-        while (GetHight(node) != k && node) {
-            size_t left_hight = GetHight(node->left);
+        size_t left_hight = GetCount(node->left);
+        while (left_hight != k_tmp && node) {
             if (left_hight < k_tmp) {
                 k_tmp = k_tmp - left_hight - 1;
                 node = node->right;
             } else if (left_hight > k_tmp) {
                 node = node->left;
             }
+            left_hight = GetCount(node->left);
         }
 
-        return (node ? node->data : 0); // в условии не написано, что нужно выводить в случае если k-ой статистики нет 
+        return node->data;
     }
 
 private:
@@ -91,6 +91,13 @@ private:
             return DoBalance(min);
         }
         return DoBalance(node);
+    }
+
+	size_t GetCount(Node* node) {
+        if (node) {
+            return GetCount(node->left) + GetCount(node->right) + 1;
+        }
+        return 0;
     }
 
     Node* FindMin(Node* node) {
@@ -147,8 +154,8 @@ private:
             }
             return RotateLeft(node);
         case -2:
-            if (GetBalance(node->left) < 0) {
-                node->left = RotateRight(node->left);
+            if (GetBalance(node->left) > 0) {
+                node->left = RotateLeft(node->left);
             }
             return RotateRight(node);
         default:
@@ -166,10 +173,11 @@ private:
 };
 
 void run() {
-    int n;
-    std::cin >> n;
+    int count;
+    std::cin >> count;
     AVLTree<unsigned int> tree;
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < count; i++) {
+        int n;
         int k;
         std::cin >> n >> k;
         if (n > 0) {
@@ -177,7 +185,7 @@ void run() {
         } else {
             tree.Delete(std::abs(n));
         }
-        std::cout << tree.kthStat(k) << std::endl;
+        std::cout << tree.kthStat(k) << " ";
     }
 }
 
@@ -185,3 +193,22 @@ int main() {
     run();
     return 0;
 }
+
+
+/*    
+    void prinngn() {
+        PrintTree(root_, 0);
+    }
+
+    void PrintTree(Node* node, int l) {
+        int i;
+        if (node) {
+            PrintTree(node->right, l + 1);
+            for (i = 1; i <= l; i++) std::cout << "    "; {
+                std::cout << "|" << node->data << "(" << node->height << ")" <<std::endl;
+            }
+            PrintTree(node->left, l + 1);
+        }
+    }
+
+*/
