@@ -92,7 +92,6 @@ void run() {
         tree.Add(tmp);
     }
     auto ouput = tree.LevelOrder();
-    // вывод
     while (!ouput.empty()) {
         std::cout << ouput.front()->value << " ";
         ouput.pop();
