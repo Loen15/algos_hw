@@ -34,7 +34,6 @@ public:
         root_ = DeleteInternal(root_, data);
     }
     T kthStat(int const& k) {
-        // return kthStatInternal(root_, k);
         Node* node = root_;
         int k_tmp = k;
         while (GetHight(node) != k && node) {
@@ -92,17 +91,6 @@ private:
             return DoBalance(min);
         }
         return DoBalance(node);
-    }
-
-    T kthStatInternal(Node* node, int const& k) {
-        size_t left_hight = GetHight(node->left);
-        if (left_hight < k) {
-            return kthStatInternal(node->right, k - left_hight - 1);
-        }
-        if (left_hight > k) {
-            return kthStatInternal(node->left, k);
-        }
-        return node->data;
     }
 
     Node* FindMin(Node* node) {
