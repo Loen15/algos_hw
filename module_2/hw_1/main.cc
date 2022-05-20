@@ -50,6 +50,9 @@ public:
 
     // Проверка принадлежности строки множеству
     bool Has(T const& key) {
+        if (keys_count_ == 0) {
+            return 0;
+        }
         size_t hash = hasher_(key) % table_.size();
         for (size_t i = 0; i < table_.size(); i++) {
             auto node = &table_[hash];
@@ -71,7 +74,7 @@ public:
 
     // Добавление строки в множество
     bool Add(T const& key) {
-        if (keys_count_ >= LoadFactor * table_.size()) {
+        if ((keys_count_ + 1) >= LoadFactor * table_.size()) {
             Rehashing();
         }
 
@@ -104,6 +107,9 @@ public:
 
     // Удаление строки из множества
     bool Delete(T const& key) {
+        if (keys_count_ == 0) {
+            return false;
+        }
         size_t hash = hasher_(key) % table_.size();
         for (size_t i = 0; i < table_.size(); i++) {
             auto node = &table_[hash];
@@ -151,22 +157,21 @@ private:
     void Rehashing() {
         
         size_t new_size = table_.size() * 2;
-        std::vector<HashTableNode<T>> old_table = std::move(table_);
         std::vector<HashTableNode<T>> new_table(new_size);
-        table_ = std::move(new_table);
         size_t new_count = 0;
-        for (auto node : old_table) {
+        for (auto node : table_) {
             if (node.state == FILLED) {
                 new_count++;
                 size_t hash = hasher_(node.data) % new_size;
                 size_t j = 0;
-                while (table_[hash].state == FILLED && j < new_size) {
+                while (new_table[hash].state == FILLED && j < new_size) {
                     j++;
                     hash = (hash + j) % new_size;
                 }
-                table_[hash] = node;
+                new_table[hash] = node;
             }
         }
+        table_ = new_table;
         keys_count_ = new_count;
     }
 
@@ -196,7 +201,7 @@ void run() {
         default:
             break;
         }
-        hash_table.print();
+        // hash_table.print();
     }
 }
 
