@@ -10,8 +10,8 @@
 #include <vector>
 
 #define A   43
-#define InitialSize 8
-#define LoadFactor 0.75
+#define INITIALSIZE 8
+#define LOADFACTOR 0.75
 enum States { EMPTY, FILLED, DELETED };
 
 // Хеш-функция строки
@@ -26,35 +26,23 @@ public:
     }
 };
 
-template<typename T>
-struct HashTableNode {
-    T data;
-    States state;
-
-    HashTableNode()
-        : state(EMPTY) {}
-        
-    HashTableNode (std::string const& data)
-        : data(data),
-            state(FILLED) {} 
-};
-
 // Хеш-таблица
 template<typename T, typename Hasher>
 class HashTable {
 public:
     HashTable()
-          : table_(InitialSize),
+          : table_(INITIALSIZE),
             keys_count_(0) {}
     ~HashTable() = default;
 
     // Проверка принадлежности строки множеству
     bool Has(T const& key) {
         if (keys_count_ == 0) {
-            return 0;
+            return false;
         }
         size_t hash = hasher_(key) % table_.size();
         for (size_t i = 0; i < table_.size(); i++) {
+            hash = (hash + i) % table_.size();
             auto node = &table_[hash];
             switch (node->state) {
             case FILLED:
@@ -67,19 +55,20 @@ public:
             default:
                 break;
             }
-            hash = (hash + i) % table_.size();
         }
         return false;
     }
 
     // Добавление строки в множество
     bool Add(T const& key) {
-        if ((keys_count_ + 1) >= LoadFactor * table_.size()) {
+        if ((keys_count_ + 1) >= LOADFACTOR * table_.size()) {
             Rehashing();
         }
 
         size_t hash = hasher_(key) % table_.size();
+        size_t del_index = table_.size();
         for (size_t i = 0; i < table_.size(); i++) {
+            hash = (hash + i) % table_.size();
             auto node = &table_[hash];
             switch (node->state) {
             case FILLED:
@@ -88,19 +77,23 @@ public:
                 }
                 break;
             case DELETED:
-                node->state = FILLED;
-                node->data = key;
-                keys_count_++;
-                return true;
+                if (del_index == table_.size()) {
+                    del_index = hash;
+                }
+                break;
             case EMPTY:
-                node->state = FILLED;
-                node->data = key;
+                if (del_index == table_.size()) {
+                    node->state = FILLED;
+                    node->data = key;
+                } else {
+                    table_[del_index].state = FILLED;
+                    table_[del_index].data = key;
+                }
                 keys_count_++;
                 return true;
             default:
                 break;
             }
-            hash = (hash + i) % table_.size();
         }
         return false;
     }
@@ -112,6 +105,7 @@ public:
         }
         size_t hash = hasher_(key) % table_.size();
         for (size_t i = 0; i < table_.size(); i++) {
+            hash = (hash + i) % table_.size();
             auto node = &table_[hash];
             switch (node->state) {
             case FILLED:
@@ -126,7 +120,6 @@ public:
             default:
                 break;
             }
-            hash = (hash + i) % table_.size();
         }
         return false;
     }
@@ -153,29 +146,39 @@ public:
     }
 
 private:
+    struct HashTableNode {
+        T data;
+        States state;
+
+        HashTableNode()
+            : state(EMPTY) {}
+            
+        HashTableNode (std::string const& data)
+            : data(data),
+                state(FILLED) {} 
+        HashTableNode& operator=(HashTableNode const& node) {
+      		this->data = node.data;
+      		this->state = node.state;
+      		return *this;
+    	}
+    };
     // Перехеширование
     void Rehashing() {
-        
         size_t new_size = table_.size() * 2;
-        std::vector<HashTableNode<T>> new_table(new_size);
-        size_t new_count = 0;
+        std::vector<HashTableNode> new_table(new_size);
         for (auto node : table_) {
             if (node.state == FILLED) {
-                new_count++;
                 size_t hash = hasher_(node.data) % new_size;
-                size_t j = 0;
-                while (new_table[hash].state == FILLED && j < new_size) {
-                    j++;
-                    hash = (hash + j) % new_size;
+                for (size_t i = 0; (i < new_size) && (new_table[hash].state == FILLED); i++) {
+                    hash = (hash + i) % new_size;
                 }
                 new_table[hash] = node;
             }
         }
-        table_ = new_table;
-        keys_count_ = new_count;
+        table_ = std::move(new_table);
     }
 
-    std::vector<HashTableNode<T>> table_;
+    std::vector<HashTableNode> table_;
     
     size_t keys_count_;
 
@@ -201,7 +204,7 @@ void run() {
         default:
             break;
         }
-        // hash_table.print();
+        hash_table.print();
     }
 }
 
