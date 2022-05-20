@@ -95,7 +95,14 @@ public:
                 break;
             }
         }
-        return false;
+        if (del_index != table_.size()) {
+            table_[del_index].state = FILLED;
+            table_[del_index].data = key;
+            keys_count_++;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     // Удаление строки из множества
