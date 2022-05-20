@@ -82,11 +82,14 @@ private:
     Comparator cmp_;
 };
 
-void run(std::queue<int> input) {
+void run() {
     Tree<int> tree;
-    while (!input.empty()) {
-        tree.Add(input.front());
-        input.pop();
+    int n;
+    std::cin >> n;
+    for (int i = 0; i < n; i++) {
+        int tmp;
+        std::cin >> tmp;
+        tree.Add(tmp);
     }
     auto ouput = tree.LevelOrder();
     // вывод
@@ -97,16 +100,6 @@ void run(std::queue<int> input) {
 }
 
 int main() {
-    //ввод
-    int n;
-    std::cin >> n;
-    std::queue<int> input;
-    for (int i = 0; i < n; i++) {
-        int tmp;
-        std::cin >> tmp;
-        input.push(tmp);
-    }
-    // алгоритм
-    run(input);
+    run();
     return 0;
 }
