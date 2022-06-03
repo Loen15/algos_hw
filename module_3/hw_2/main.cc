@@ -94,30 +94,3 @@ int CountOfWays(IGraph const& graph, int u, int w) {
     }
     return count_ways[w];
 }
-
-/*
-
-4
-5
-0 1
-0 2
-1 2
-1 3
-2 3
-
-0 3
-answer 2
-
-7
-8
-0 1
-0 2
-1 3
-2 3
-3 4
-3 5
-4 6
-5 6
-0 6
-answer 4
-*/
