@@ -4,6 +4,7 @@
 
 # Unignore all with extensions
 !*.cc
+!*.h
 !*.md
 
 # Unignore all dirs
