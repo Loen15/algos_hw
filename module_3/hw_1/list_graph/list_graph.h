@@ -1,7 +1,7 @@
 #ifndef LIST_GRAPH_H
 #define LIST_GRAPH_H
 
-#include "i_graph.h"
+#include "../i_graph/i_graph.h"
 
 class ListGraph : public IGraph {
 public:
@@ -18,4 +18,4 @@ private:
     std::vector<std::vector<int>> lists_; 
 };
 
-#endif LIST_GRAPH_H
+#endif // LIST_GRAPH_H

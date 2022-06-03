@@ -1,7 +1,7 @@
 #ifndef ARC_GRAPH_H
 #define ARC_GRAPH_H
 
-#include "i_graph.h"
+#include "../i_graph/i_graph.h"
 
 class ArcGraph : public IGraph {
 public:
@@ -19,4 +19,4 @@ private:
     std::vector<std::pair<int, int>> list_; 
 };
 
-#endif ARC_GRAPH_H
+#endif // ARC_GRAPH_H

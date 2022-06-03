@@ -15,4 +15,4 @@ struct IGraph {
     virtual std::vector<int> GetPrevVertices(int vertex) const = 0;
 };
 
-#endif I_GRAPH_H
+#endif // I_GRAPH_H

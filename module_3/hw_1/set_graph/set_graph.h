@@ -1,7 +1,7 @@
 #ifndef SET_GRAPH_H
 #define SET_GRAPH_H
 
-#include "i_graph.h"
+#include "../i_graph/i_graph.h"
 
 #include <unordered_set>
 
@@ -20,4 +20,4 @@ private:
     std::vector<std::unordered_set<int>> sets_;
 };
 
-#endif SET_GRAPH_H
+#endif // SET_GRAPH_H

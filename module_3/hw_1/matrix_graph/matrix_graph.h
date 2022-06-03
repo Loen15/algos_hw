@@ -1,7 +1,7 @@
 #ifndef MATRIX_GRAPH_H
 #define MATRIX_GRAPH_H
 
-#include "i_graph.h"
+#include "../i_graph/i_graph.h"
 
 class MatrixGraph : public IGraph {
 public:
@@ -18,4 +18,4 @@ private:
     std::vector<std::vector<bool>> matrix_; 
 };
 
-#endif MATRIX_GRAPH_H
+#endif // MATRIX_GRAPH_H
