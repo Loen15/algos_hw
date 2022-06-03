@@ -15,7 +15,7 @@ public:
     std::vector<int> GetNextVertices(int vertex) const override;
     std::vector<int> GetPrevVertices(int vertex) const override;
 private:
-    std::vector<std::vector<int>> lists_; 
+    std::vector<std::vector<bool>> matrix_; 
 };
 
 #endif MATRIX_GRAPH_H
