@@ -6,8 +6,8 @@ ListGraph::ListGraph(int size) : lists_(size) {}
 
 ListGraph::ListGraph(IGraph const& graph) 
                     : lists_(graph.VerticesCount()) {
-    for (int i = 0; i < lists_.size(); i++) {
-        lists_[i] = graph.GetNextVertices(i);
+    for (int from = 0; from < lists_.size(); from++) {
+        lists_[from] = graph.GetNextVertices(from);
     }
 }
 
