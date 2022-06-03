@@ -1,4 +1,16 @@
+# Ignore all
+*
 
-*hw
+
+# Unignore all with extensions
+!*.cc
+!*.h
+!*.md
+!*.txt
+!Makefile
+
+# Unignore all dirs
+!*/
+
 # Ignore vscode folder
-*/.vscode
+*/.vscode 
