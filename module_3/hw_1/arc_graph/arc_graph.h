@@ -15,7 +15,8 @@ public:
     std::vector<int> GetNextVertices(int vertex) const override;
     std::vector<int> GetPrevVertices(int vertex) const override;
 private:
-    std::vector<std::vector<int>> lists_; 
+    int count_;
+    std::vector<std::pair<int, int>> list_; 
 };
 
 #endif ARC_GRAPH_H
