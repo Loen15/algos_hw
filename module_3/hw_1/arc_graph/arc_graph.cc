@@ -7,7 +7,7 @@ ArcGraph::ArcGraph(int size) : count_(size) {}
 ArcGraph::ArcGraph(IGraph const& graph) 
                     : count_(graph.VerticesCount()) {
     for (int from = 0; from < count_; from++) {
-        for (int to : graph.GetNextVertices(from)) {
+        for (auto to : graph.GetNextVertices(from)) {
             list_.emplace_back(from, to);
         }
     }
