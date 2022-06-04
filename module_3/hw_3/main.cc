@@ -19,22 +19,22 @@
 
 class MapGraph {
 public:
-    explicit MapGraph(int size) : maps_(size) {}
+    explicit MapGraph(int size) : lists_(size) {}
 
     void AddEdge(int from, int to, int weight) {
-        assert(0 <= from && from < maps_.size());
-        assert(0 <= to && to < maps_.size());
-        maps_[from].insert(std::make_pair(to, weight));
-        maps_[to].insert(std::make_pair(from, weight));
+        assert(0 <= from && from < lists_.size());
+        assert(0 <= to && to < lists_.size());
+        lists_[from].push_back(std::make_pair(to, weight));
+        lists_[to].push_back(std::make_pair(from, weight));
     }
-    int VerticesCount() const { return maps_.size(); }
+    int VerticesCount() const { return lists_.size(); }
 
-    std::map<int, int> GetVertices(int vertex) const {
-        assert(0 <= vertex && vertex < maps_.size());
-        return maps_[vertex];
+    std::vector<std::pair<int, int>> GetVertices(int vertex) const {
+        assert(0 <= vertex && vertex < lists_.size());
+        return lists_[vertex];
     }
 private:
-    std::vector<std::map<int, int>> maps_; // first - вершина, second - вес
+    std::vector<std::vector<std::pair<int, int>>> lists_; // first - вершина, second - вес
 };
 
 void run();
@@ -66,17 +66,21 @@ void run() {
 int Dijkstra(MapGraph graph, int from, int to) {
     std::vector<int> distance(graph.VerticesCount(), -1);
     distance[from] = 0;
-    std::priority_queue<int> set;
-    set.push(from);
-    while (!set.empty()) {
-        auto curr = set.top();
-        set.pop();
-        
-        for (auto way : graph.GetVertices(curr)) {
-            if (distance[way.first] == -1 || distance[curr] + way.second <  distance[way.first]) {
-                distance[way.first] = distance[curr] + way.second;
-                
-                set.push(way.first);
+    std::queue<std::pair<int, int>> q;
+    q.push(std::make_pair(from, 0));
+    while (!q.empty()) {
+        auto curr = q.front();
+        q.pop();
+        if (distance[curr.first] < curr.second)
+            continue;
+
+        for (auto way : graph.GetVertices(curr.first)) {
+            if (distance[way.first] == -1) {
+                distance[way.first] = distance[curr.first] + way.second;
+                q.push(std::make_pair(way.first, way.second));
+            } else if (distance[curr.first] + way.second <  distance[way.first]) {
+                distance[way.first] = distance[curr.first] + way.second;
+                q.push(std::make_pair(way.first, distance[way.second]));
             }
         }
     }
